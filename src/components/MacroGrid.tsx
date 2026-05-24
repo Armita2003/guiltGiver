@@ -11,26 +11,26 @@ export default function MacroGrid() {
         value="0"
         secondaryValue="2,000"
         color={colors.gridColors.primary}
-        width="100%"
       />
       <MacroCard
         label="PROTEIN"
         value="0g"
         secondaryValue="150g"
         color={colors.gridColors.secondary}
+        halfWidth
       />
       <MacroCard
         label="CARBS"
         value="0g"
         secondaryValue="250g"
         color={colors.gridColors.tertiary}
+        halfWidth
       />
       <MacroCard
         label="FAT"
         value="10g"
         secondaryValue="65g"
         color={colors.gridColors.quaternary}
-        width="100%"
       />
     </View>
   );

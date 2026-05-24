@@ -66,7 +66,7 @@ export const cardStyles = StyleSheet.create({
     backgroundColor: "#16213e",
     borderRadius: 12,
     padding: 16,
-    width: "48%",
+    // width: "48%",
     borderLeftWidth: 4,
     gap: 8,
   },

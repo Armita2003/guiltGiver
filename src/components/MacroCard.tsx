@@ -1,19 +1,19 @@
 import { cardStyles, colors } from "@/styles/global";
-import { DimensionValue, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { Bar } from "react-native-progress";
 type MacroCardProps = {
   label: string;
   value: string;
   secondaryValue: string;
   color: string;
-  width?: DimensionValue;
+  halfWidth?: boolean;
 };
 export default function MacroCard({
   label,
   value,
   secondaryValue,
   color,
-  width = "48%",
+  halfWidth = false,
 }: MacroCardProps) {
   const current = parseFloat(value) || 0;
   const max = parseFloat(secondaryValue) || 1; // Avoid division by zero
@@ -26,7 +26,16 @@ export default function MacroCard({
   if (progress > 1) progress = 1;
 
   return (
-    <View style={[cardStyles.card, { borderLeftColor: color, width: width }]}>
+    <View
+      style={[
+        cardStyles.card,
+        {
+          borderLeftColor: color,
+          flex: halfWidth ? 1 : undefined,
+          width: halfWidth ? undefined : "100%",
+        },
+      ]}
+    >
       <Text style={cardStyles.label}>{label}</Text>
       <View
         style={{
