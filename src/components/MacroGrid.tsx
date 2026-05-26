@@ -1,7 +1,8 @@
-import { colors, gridStyles } from "@/styles/global";
+import { colors } from "@/styles/global";
 import React from "react";
 import { View } from "react-native";
 import MacroCard from "./MacroCard";
+import { gridStyles } from "./MacroGrid.styles";
 
 export default function MacroGrid() {
   return (
@@ -28,7 +29,7 @@ export default function MacroGrid() {
       />
       <MacroCard
         label="FAT"
-        value="10g"
+        value="0g"
         secondaryValue="65g"
         color={colors.gridColors.quaternary}
       />

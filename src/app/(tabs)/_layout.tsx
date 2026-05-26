@@ -1,7 +1,9 @@
 import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import Octicons from "@expo/vector-icons/Octicons";
+import { BlurView } from "expo-blur";
 import { Tabs } from "expo-router";
+
 export default function TabLayout() {
   return (
     <Tabs
@@ -12,6 +14,16 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: colors.background,
           borderTopColor: colors.surface,
+          borderTopWidth: 1,
+        },
+        tabBarBackground() {
+          <BlurView
+            intensity={24}
+            tint="dark"
+            style={{
+              flex: 1,
+            }}
+          />;
         },
       }}
     >

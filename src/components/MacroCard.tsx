@@ -1,6 +1,7 @@
-import { cardStyles, colors } from "@/styles/global";
+import { colors } from "@/styles/global";
 import { Text, View } from "react-native";
 import { Bar } from "react-native-progress";
+import { cardStyles } from "./MacroCard.styles";
 type MacroCardProps = {
   label: string;
   value: string;
