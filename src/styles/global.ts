@@ -1,5 +1,13 @@
 import { StyleSheet } from "react-native";
 
+export const fonts = {
+  regular: "Montserrat-Regular",
+  medium: "Montserrat-Medium",
+  semibold: "Montserrat-SemiBold",
+  bold: "Montserrat-Bold",
+  // Add more weights as needed
+};
+
 export const colors = {
   // background: "#1a1a2e",
   // header: "#242444",

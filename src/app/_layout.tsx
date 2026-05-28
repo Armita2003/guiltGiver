@@ -1,8 +1,11 @@
-import { colors, globalStyles } from "@/styles/global";
+import { colors, fonts, globalStyles } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { Stack } from "expo-router";
+import { useCallback } from "react";
 import { Pressable, Text } from "react-native";
 
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
 type EventMap = { "menu:open": () => void };
 const listeners: { [K in keyof EventMap]?: Set<EventMap[K]> } = {};
 export const emit = <K extends keyof EventMap>(event: K) =>
@@ -14,6 +17,19 @@ export const on = <K extends keyof EventMap>(event: K, fn: EventMap[K]) => {
 };
 
 export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    [fonts.bold]: require("../../assets/fonts/Montserrat-Bold.ttf"),
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null; // Or render a loading spinner
+  }
   return (
     <Stack
       screenOptions={{

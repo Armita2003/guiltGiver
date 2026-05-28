@@ -1,4 +1,5 @@
-import { colors, globalStyles } from "@/styles/global";
+import { colors, fonts, globalStyles } from "@/styles/global";
+import { Image } from "expo-image";
 import { useState } from "react";
 import {
   StyleSheet,
@@ -14,8 +15,9 @@ export default function AddMealScreen() {
   const [time, setTime] = useState("");
   const [icon, setIcon] = useState("");
 
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const handleAddMeal = () => {
-    console.log({ name, calories, time, icon });
+    console.log({ name, calories, time, icon, selectedDate });
   };
 
   return (
@@ -43,17 +45,18 @@ export default function AddMealScreen() {
         value={calories}
         onChangeText={setCalories}
       />
+      {/* <Button onPress={() => {}} /> */}
 
       {/* <View style={styles.row}> */}
-      <Text style={styles.label}>TIME</Text>
+      {/* <Text style={styles.label}>TIME</Text>
       <TextInput
         style={styles.input}
-        placeholder="time (g)"
+        placeholder="time (e.g., 7:30 PM)"
         placeholderTextColor={colors.textSecondary}
         keyboardType="numeric"
         value={time}
         onChangeText={setTime}
-      />
+      /> */}
       {/* <TextInput
           style={[styles.input, styles.rowInput]}
           placeholder="icon (g)"
@@ -63,9 +66,33 @@ export default function AddMealScreen() {
           onChangeText={setIcon}
         /> */}
       {/* </View> */}
+      {/* <Host matchContents>
+        <DatePicker
+          title="Select date and time"
+          selection={selectedDate}
+          displayedComponents={["date", "hourAndMinute"]}
+          onDateChange={(date) => {
+            setSelectedDate(date);
+          }}
+        />
+      </Host> */}
 
-      <TouchableOpacity style={styles.button} onPress={handleAddMeal}>
-        <Text style={styles.buttonText}>Add Meal</Text>
+      <TouchableOpacity
+        style={[
+          styles.button,
+          {
+            flexDirection: "row",
+            justifyContent: "center",
+            gap: 8,
+          },
+        ]}
+        onPress={handleAddMeal}
+      >
+        <Text style={styles.buttonText}>ADD TO THE LOG</Text>
+        <Image
+          source={require("../../../assets/images/AddLogIcon.svg")}
+          style={{ width: 20, height: 12 }}
+        />
       </TouchableOpacity>
     </View>
   );
@@ -104,7 +131,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#283500",
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: 24,
+    fontFamily: fonts.bold,
   },
 });
