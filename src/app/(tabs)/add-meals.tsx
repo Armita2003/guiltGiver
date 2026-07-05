@@ -46,7 +46,6 @@ export default function AddMealScreen() {
         text2: "Please enter a meal name, calories and select a category.",
         position: "bottom",
       });
-
       return;
     }
 
@@ -94,10 +93,12 @@ export default function AddMealScreen() {
           styles.scrollContent,
         ]}
       >
-        <Text style={globalStyles.secondaryTitle}>LOG YOUR FAILURE</Text>
-        <Text style={globalStyles.secondarySubTitle}>
-          DON'T LIE TO YOURSELF. WE'LL KNOW.
-        </Text>
+        <View style={globalStyles.sectionSpacing}>
+          <Text style={globalStyles.sectionTitle}>LOG YOUR FAILURE</Text>
+          <Text style={globalStyles.secondarySubTitle}>
+            Don't lie to yourself. We'll know.
+          </Text>
+        </View>
         <View style={{ marginTop: 12 }}>
           <View>
             <Text style={styles.label}>Meal name</Text>
@@ -292,7 +293,7 @@ const styles = StyleSheet.create({
   postScriptText: {
     fontSize: 10,
     fontWeight: "regular",
-    color: "#C4C9AC",
+    color: colors.textTertiary,
     opacity: 0.4,
     textAlign: "center",
     paddingBottom: 12,

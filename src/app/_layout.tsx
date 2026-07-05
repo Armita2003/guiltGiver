@@ -117,12 +117,21 @@ export default function RootLayout() {
                 Guilt Giver
               </Text>
             ),
-            // headerTitleAlign: "center", // Center the title
+            headerTitleAlign: "center", // Center the title
 
             // ✅ Hamburger menu on the left
             headerLeft: () => (
               <Pressable onPress={() => emit("menu:open")}>
-                <Ionicons name="menu" size={24} color={colors.text} />
+                <Ionicons name="menu" size={24} color={colors.textTertiary} />
+              </Pressable>
+            ),
+            headerRight: () => (
+              <Pressable onPress={() => emit("menu:open")}>
+                <Ionicons
+                  name="settings"
+                  size={24}
+                  color={colors.textTertiary}
+                />
               </Pressable>
             ),
             headerShadowVisible: false,

@@ -1,3 +1,4 @@
+import { colors } from "@/styles/global";
 import { StyleSheet } from "react-native";
 
 export const cardStyles = StyleSheet.create({
@@ -11,7 +12,7 @@ export const cardStyles = StyleSheet.create({
   },
   label: {
     fontSize: 12,
-    color: "#C4C9AC",
+    color: colors.textTertiary,
     marginBottom: 4,
   },
   value: {
@@ -23,7 +24,7 @@ export const cardStyles = StyleSheet.create({
   secondaryValue: {
     fontSize: 12,
     fontWeight: "bold",
-    color: "#C4C9AC",
+    color: colors.textTertiary,
     marginTop: 8,
     alignSelf: "center",
   },

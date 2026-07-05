@@ -27,11 +27,11 @@ export const MealItemStyles = StyleSheet.create({
   },
   time: {
     fontSize: 14,
-    color: "#C4C9AC",
+    color: colors.textTertiary,
   },
   calories: {
     fontSize: 12,
-    color: "#C4C9AC",
+    color: colors.textTertiary,
   },
   iconContainer: {
     width: 40,

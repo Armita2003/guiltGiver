@@ -17,6 +17,7 @@ export const colors = {
   // text: "#ffffff",
   text: "#ccff00",
   textSecondary: "#a0a0b0",
+  textTertiary: "#C4C9AC",
   alert: "#ff5252",
   background: "#0F0F0F",
   primaryActions: "#ccff00",
@@ -38,10 +39,8 @@ export const colors = {
 export const globalStyles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    // paddingBottom: 30,
     backgroundColor: colors.background,
-    paddingTop: 16,
-    // paddingHorizontal: 20,
+    paddingTop: 34,
     flexShrink: 0,
     paddingLeft: 20,
     paddingRight: 20,
@@ -73,11 +72,12 @@ export const globalStyles = StyleSheet.create({
     color: "#C4C9AC",
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: colors.textSecondary,
-    // marginTop: 30,
-    // marginBottom: 16,
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#E5E2E1",
+  },
+  sectionSpacing: {
+    gap: 4,
   },
   empty: {
     color: colors.textSecondary,
