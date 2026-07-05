@@ -38,11 +38,18 @@ export const colors = {
 export const globalStyles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    paddingBottom: 20,
+    // paddingBottom: 30,
     backgroundColor: colors.background,
     paddingTop: 16,
-    paddingHorizontal: 20,
+    // paddingHorizontal: 20,
     flexShrink: 0,
+    paddingLeft: 20,
+    paddingRight: 20,
+  },
+  pageContent: {
+    // marginTop: 30,
+    marginBottom: 30,
+    paddingBottom: 30,
   },
   title: {
     fontSize: 28,

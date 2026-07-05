@@ -1,10 +1,10 @@
-import HomeHeader from "@/components/HomeHeader";
 import MacroGrid from "@/components/MacroGrid";
 import RecentMeals from "@/components/RecentMeals";
+import { getMeals, Meal } from "@/storage/meals";
 import { colors, globalStyles } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -31,9 +31,22 @@ const menuItems: MenuItem[] = [
 ];
 
 export default function HomeScreen() {
+  const [meals, setMeals] = useState<Meal[]>([]);
   const [menuOpen, setMenuOpen] = useState(false);
   const slideAnim = useState(new Animated.Value(-SIDEBAR_WIDTH))[0];
   const router = useRouter();
+
+  const loadMeals = async () => {
+    const data = await getMeals();
+    setMeals(data);
+    console.log("Loaded meals:", data);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      loadMeals();
+    }, [])
+  );
 
   const openMenu = () => {
     setMenuOpen(true);
@@ -65,24 +78,27 @@ export default function HomeScreen() {
   return (
     <>
       <ScrollView
-        contentContainerStyle={globalStyles.container}
-        style={{ flex: 1 }}
+        contentContainerStyle={[
+          globalStyles.container,
+          globalStyles.pageContent,
+        ]}
+        style={{ flex: 1, backgroundColor: colors.background }}
         showsVerticalScrollIndicator={false} // Hide ugly scrollbar
         keyboardShouldPersistTaps="handled" // Allow taps while keyboard is open
         bounces={true} // iOS bounce effect (optional)
         overScrollMode="always"
       >
         {/* <Text style={globalStyles.title}>Guilt Giver</Text> */}
-        <View style={{ gap: 4, marginBottom: 24, marginTop: 30 }}>
+        <View style={{ gap: 4, marginBottom: 24 }}>
           <Text style={globalStyles.subtitle}>SYSTEM STATUS: UNIMPRESSED</Text>
           <Text style={globalStyles.sectionTitle}>Feed the machine.</Text>
           <Text style={globalStyles.secondarySubTitle}>
             Did you really need that second snack? Your data says otherwise.
           </Text>
-          <HomeHeader />
+          {/* <HomeHeader /> */}
         </View>
         <MacroGrid />
-        <RecentMeals />
+        <RecentMeals meals={meals} />
       </ScrollView>
       <Modal
         visible={menuOpen}

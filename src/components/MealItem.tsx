@@ -1,16 +1,17 @@
 import { colors } from "@/styles/global";
-import { Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { Text, View } from "react-native";
 import { MealItemStyles } from "./MealItem.styles";
-
-type IconName = React.ComponentProps<typeof Ionicons>["name"];
 
 type MealItemProps = {
   name: string;
   calories: number;
   time: string;
-  icon: IconName;
+  icon: string;
+  pro?: number;
+  carb?: number;
+  fat?: number;
 };
 
 export default function MealItem({
@@ -18,6 +19,9 @@ export default function MealItem({
   calories,
   time,
   icon,
+  pro,
+  carb,
+  fat,
 }: MealItemProps) {
   return (
     <View>
@@ -33,10 +37,10 @@ export default function MealItem({
       >
         <View style={{ flexDirection: "row", gap: 16, alignItems: "center" }}>
           <View style={MealItemStyles.iconContainer}>
-            <Ionicons
-              name={icon}
-              size={20}
-              color={colors.gridColors.secondary}
+            <MaterialCommunityIcons
+              name={icon as any}
+              size={28}
+              color={colors.button}
             />
           </View>
           <View>
@@ -44,7 +48,16 @@ export default function MealItem({
             <Text style={MealItemStyles.time}>{time}</Text>
           </View>
         </View>
-        <Text style={MealItemStyles.calories}>{calories} CAL</Text>
+        <View style={MealItemStyles.statsContainer}>
+          <Text style={MealItemStyles.calories}>{calories} CAL</Text>
+          <View style={MealItemStyles.macroContainer}>
+            <Text style={MealItemStyles.pro}>{pro}g P</Text>
+            <Text style={MealItemStyles.dot}> • </Text>
+            <Text style={MealItemStyles.carb}>{carb}g C</Text>
+            <Text style={MealItemStyles.dot}> • </Text>
+            <Text style={MealItemStyles.fat}>{fat}g F</Text>
+          </View>
+        </View>
       </View>
     </View>
   );
