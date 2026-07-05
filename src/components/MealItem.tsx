@@ -1,10 +1,11 @@
 import { deleteMeal } from "@/storage/meals";
 import { colors } from "@/styles/global";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import React, { useState } from "react";
-import { Modal, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
+import ConfirmationModal from "./ConfirmationModal";
 import { MealItemStyles } from "./MealItem.styles";
-
 type MealItemProps = {
   id: string;
   name: string;
@@ -29,20 +30,9 @@ export default function MealItem({
   onDelete,
 }: MealItemProps) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const handleLongPress = () => {
-    setShowDeleteModal(true);
 
-    // Alert.alert("Delete Meal", `Are you sure you want to delete "${name}"?`, [
-    //   { text: "Cancel", style: "cancel" },
-    //   {
-    //     text: "Delete",
-    //     style: "destructive",
-    //     onPress: async () => {
-    //       await deleteMeal(id);
-    //       onDelete();
-    //     },
-    //   },
-    // ]);
+  const handleLongPress = async () => {
+    setShowDeleteModal(true);
   };
   return (
     <>
@@ -62,7 +52,7 @@ export default function MealItem({
               <MaterialCommunityIcons
                 name={icon as any}
                 size={28}
-                color={colors.button}
+                color={colors.white}
               />
             </View>
             <View>
@@ -82,40 +72,21 @@ export default function MealItem({
           </View>
         </View>
       </TouchableOpacity>
-      <Modal
+      <ConfirmationModal
         visible={showDeleteModal}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setShowDeleteModal(false)}
-      >
-        <View style={MealItemStyles.overlay}>
-          <View style={MealItemStyles.modalCard}>
-            <Text style={MealItemStyles.modalTitle}>Delete meal?</Text>
-            <Text style={MealItemStyles.modalText}>
-              Are you sure you want to delete "{name}"?
-            </Text>
-            <View style={MealItemStyles.buttonRow}>
-              <TouchableOpacity
-                style={[MealItemStyles.button, MealItemStyles.cancelButton]}
-                onPress={() => setShowDeleteModal(false)}
-              >
-                <Text style={MealItemStyles.buttonText}>Cancel</Text>
-              </TouchableOpacity>
+        title="Delete meal?"
+        message={`Are you sure you want to delete "${name}"?`}
+        cancelLabel="Cancel"
+        confirmLabel="Delete"
+        onCancel={() => setShowDeleteModal(false)}
+        onConfirm={async () => {
+          await deleteMeal(id);
+          setShowDeleteModal(false);
 
-              <TouchableOpacity
-                style={[MealItemStyles.button, MealItemStyles.deleteButton]}
-                onPress={async () => {
-                  await deleteMeal(id);
-                  setShowDeleteModal(false);
-                  onDelete();
-                }}
-              >
-                <Text style={MealItemStyles.buttonText}>Delete</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          onDelete();
+        }}
+      />
     </>
   );
 }

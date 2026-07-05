@@ -5,16 +5,12 @@ export const fonts = {
   medium: "Montserrat-Medium",
   semibold: "Montserrat-SemiBold",
   bold: "Montserrat-Bold",
-  // Add more weights as needed
 };
 
 export const colors = {
-  // background: "#1a1a2e",
-  // header: "#242444",
   header: "#131313",
   surface: "#171815",
   primary: "#4fc3f7",
-  // text: "#ffffff",
   text: "#ccff00",
   textSecondary: "#a0a0b0",
   textTertiary: "#C4C9AC",
@@ -34,6 +30,7 @@ export const colors = {
     unfilled: "#353534",
   },
   button: "#C3F400",
+  white: "#ffffff",
 };
 
 export const globalStyles = StyleSheet.create({
@@ -53,7 +50,7 @@ export const globalStyles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: colors.text,
+    color: colors.white,
   },
   subtitle: {
     fontSize: 12,
@@ -92,5 +89,11 @@ export const globalStyles = StyleSheet.create({
     color: "#007bff",
     fontSize: 18,
     // textDecorationLine: "underline",
+  },
+  emptyList: {
+    color: colors.textSecondary,
+    fontSize: 14,
+    textAlign: "center",
+    marginTop: 24,
   },
 });

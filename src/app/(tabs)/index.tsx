@@ -1,9 +1,11 @@
+import CopyButton from "@/components/CopyButton";
 import MacroGrid from "@/components/MacroGrid";
 import RecentMeals from "@/components/RecentMeals";
+import ShareButton from "@/components/ShareButton";
 import { getMeals, Meal } from "@/storage/meals";
 import { colors, globalStyles } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useFocusEffect, usePathname, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
   Animated,
@@ -35,6 +37,7 @@ export default function HomeScreen() {
   const [menuOpen, setMenuOpen] = useState(false);
   const slideAnim = useState(new Animated.Value(-SIDEBAR_WIDTH))[0];
   const router = useRouter();
+  const pathname = usePathname();
 
   const loadMeals = async () => {
     const data = await getMeals();
@@ -92,12 +95,23 @@ export default function HomeScreen() {
 
         <View style={(globalStyles.sectionSpacing, { marginBottom: 24 })}>
           <Text style={globalStyles.subtitle}>SYSTEM STATUS: UNIMPRESSED</Text>
-          <Text style={globalStyles.sectionTitle}>Feed the machine.</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 8,
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Text style={globalStyles.sectionTitle}>Feed the machine.</Text>
+            <ShareButton meals={meals} />
+          </View>
           <Text style={globalStyles.secondarySubTitle}>
             Did you really need that second snack? Your data says otherwise.
           </Text>
         </View>
         <MacroGrid meals={meals} />
+        <CopyButton meals={meals} />
         <RecentMeals meals={meals} onDelete={loadMeals} />
       </ScrollView>
       <Modal
@@ -144,27 +158,52 @@ export default function HomeScreen() {
 
             {/* Navigation Links */}
             <ScrollView
-              style={{ gap: 24, marginBottom: 20 }}
+              style={{ marginBottom: 20 }}
               showsVerticalScrollIndicator={false}
             >
-              {menuItems.map((item) => (
-                <Pressable
-                  key={item.route}
-                  onPress={() => handleNavigate(item.route)}
-                  style={({ pressed }) => [
-                    {
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: 12,
-                      opacity: pressed ? 0.7 : 1,
-                      paddingVertical: 12,
-                    },
-                  ]}
-                >
-                  <Ionicons name={item.icon as any} size={22} color="white" />
-                  <Text style={globalStyles.sectionTitle}>{item.label}</Text>
-                </Pressable>
-              ))}
+              {menuItems.map((item) => {
+                const isSelected = pathname === item.route;
+
+                return (
+                  <Pressable
+                    key={item.route}
+                    onPress={() => handleNavigate(item.route)}
+                    style={({ pressed }) => [
+                      {
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 12,
+                        opacity: pressed ? 0.7 : 1,
+                        paddingVertical: 12,
+                        paddingHorizontal: 12,
+                        borderRadius: 12,
+                        marginVertical: 4,
+                      },
+                      isSelected && {
+                        backgroundColor: colors.sutleDepth,
+                      },
+                    ]}
+                  >
+                    <Ionicons
+                      name={item.icon as any}
+                      size={22}
+                      color={isSelected ? colors.text : colors.textSecondary}
+                    />
+                    <Text
+                      style={[
+                        globalStyles.secondarySubTitle,
+                        {
+                          color: isSelected
+                            ? colors.text
+                            : colors.textSecondary,
+                        },
+                      ]}
+                    >
+                      {item.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
             </ScrollView>
 
             {/* Optional: App Info at Bottom */}

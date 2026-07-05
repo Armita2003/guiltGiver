@@ -1,5 +1,6 @@
 import { Meal } from "@/storage/meals";
 import { colors } from "@/styles/global";
+import { computeTotals } from "@/utils/meals";
 import React from "react";
 import { View } from "react-native";
 import MacroCard from "./MacroCard";
@@ -10,15 +11,7 @@ type MacroGridProps = {
 };
 
 export default function MacroGrid({ meals }: MacroGridProps) {
-  const totals = meals.reduce(
-    (acc, meal) => ({
-      calories: acc.calories + meal.calories,
-      protein: acc.protein + (meal.protein ?? 0),
-      carbs: acc.carbs + (meal.carbs ?? 0),
-      fat: acc.fat + (meal.fat ?? 0),
-    }),
-    { calories: 0, protein: 0, carbs: 0, fat: 0 }
-  );
+  const totals = computeTotals(meals);
 
   return (
     <View style={gridStyles.grid}>

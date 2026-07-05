@@ -122,16 +122,12 @@ export default function RootLayout() {
             // ✅ Hamburger menu on the left
             headerLeft: () => (
               <Pressable onPress={() => emit("menu:open")}>
-                <Ionicons name="menu" size={24} color={colors.textTertiary} />
+                <Ionicons name="menu" size={24} color={colors.white} />
               </Pressable>
             ),
             headerRight: () => (
               <Pressable onPress={() => emit("menu:open")}>
-                <Ionicons
-                  name="settings"
-                  size={24}
-                  color={colors.textTertiary}
-                />
+                <Ionicons name="settings" size={24} color={colors.white} />
               </Pressable>
             ),
             headerShadowVisible: false,
