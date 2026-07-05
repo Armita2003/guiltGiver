@@ -1,24 +1,37 @@
+import ShareButton from "@/components/ShareButton";
+import { getMeals, Meal } from "@/storage/meals";
 import { colors, fonts, globalStyles } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Stack, useFocusEffect } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Pressable, Text } from "react-native";
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
-type EventMap = { "menu:open": () => void };
-const listeners: { [K in keyof EventMap]?: Set<EventMap[K]> } = {};
-export const emit = <K extends keyof EventMap>(event: K) =>
-  listeners[event]?.forEach((fn) => fn());
+type EventMap = {
+  "menu:open": () => void;
+  "meals:updated": (meals: Meal[]) => void;
+};
+type ListenerMap = { [K in keyof EventMap]?: Set<(...args: any[]) => void> };
+const listeners: ListenerMap = {};
+
+export const emit = <K extends keyof EventMap>(
+  event: K,
+  ...args: Parameters<EventMap[K]>
+) => {
+  listeners[event]?.forEach((fn) => fn(...args));
+};
+
 export const on = <K extends keyof EventMap>(event: K, fn: EventMap[K]) => {
   if (!listeners[event]) listeners[event] = new Set();
-  listeners[event]!.add(fn);
+  listeners[event]!.add(fn as (...args: any[]) => void);
   return () => {
-    listeners[event]?.delete(fn);
+    listeners[event]?.delete(fn as (...args: any[]) => void);
   };
 };
 
 export default function RootLayout() {
+  const [meals, setMeals] = useState<Meal[]>([]);
   const [fontsLoaded] = useFonts({
     [fonts.bold]: require("../../assets/fonts/Montserrat-Bold.ttf"),
   });
@@ -28,10 +41,6 @@ export default function RootLayout() {
       await SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
-
-  if (!fontsLoaded) {
-    return null; // Or render a loading spinner
-  }
 
   const toastConfig = {
     success: (props: any) => (
@@ -95,6 +104,30 @@ export default function RootLayout() {
       />
     ),
   };
+
+  const loadMeals = async () => {
+    const data = await getMeals();
+    setMeals(data);
+  };
+
+  useEffect(() => {
+    const unsubscribe = on("meals:updated", (updatedMeals) => {
+      setMeals(updatedMeals);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadMeals();
+    }, [])
+  );
+
+  if (!fontsLoaded) {
+    return null; // Or render a loading spinner
+  }
+
   return (
     <>
       <Stack
@@ -126,9 +159,12 @@ export default function RootLayout() {
               </Pressable>
             ),
             headerRight: () => (
-              <Pressable onPress={() => emit("menu:open")}>
-                <Ionicons name="settings" size={24} color={colors.white} />
-              </Pressable>
+              <ShareButton meals={meals} />
+              // // <>
+              //   {/* <Pressable onPress={() => emit("menu:open")}>
+              //     <Ionicons name="settings" size={24} color={colors.white} />
+              //   </Pressable> */}
+              // {/* </> */}
             ),
             headerShadowVisible: false,
           }}

@@ -1,7 +1,7 @@
 import CopyButton from "@/components/CopyButton";
 import MacroGrid from "@/components/MacroGrid";
 import RecentMeals from "@/components/RecentMeals";
-import ShareButton from "@/components/ShareButton";
+import ReminderToggle from "@/components/ReminderToggle";
 import { getMeals, Meal } from "@/storage/meals";
 import { colors, globalStyles } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
@@ -16,7 +16,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { on } from "../_layout";
+import { emit, on } from "../_layout";
 
 const SIDEBAR_WIDTH = Dimensions.get("window").width * 1; // 100% of screen
 
@@ -42,7 +42,7 @@ export default function HomeScreen() {
   const loadMeals = async () => {
     const data = await getMeals();
     setMeals(data);
-    // console.log("Loaded meals:", data);
+    emit("meals:updated", data);
   };
 
   useFocusEffect(
@@ -104,7 +104,7 @@ export default function HomeScreen() {
             }}
           >
             <Text style={globalStyles.sectionTitle}>Feed the machine.</Text>
-            <ShareButton meals={meals} />
+            {/* <ShareButton meals={meals} /> */}
           </View>
           <Text style={globalStyles.secondarySubTitle}>
             Did you really need that second snack? Your data says otherwise.
@@ -112,6 +112,7 @@ export default function HomeScreen() {
         </View>
         <MacroGrid meals={meals} />
         <CopyButton meals={meals} />
+        <ReminderToggle />
         <RecentMeals meals={meals} onDelete={loadMeals} />
       </ScrollView>
       <Modal

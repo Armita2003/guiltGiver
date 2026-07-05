@@ -15,11 +15,10 @@ export default function CopyButton({ meals }: CopyButtonProps) {
   const handleCopy = async () => {
     const totals = computeTotals(meals);
 
-    const summary = `Guilt Giver Daily Summary\n\nCalories: ${totals.calories}\nProtein: ${totals.protein}g\nCarbs: ${totals.carbs}g\nFat: ${totals.fat}g\n\nMeals: ${meals.length} logged today`;
+    const summary = `Guilt Giver Daily Summary\n\nCalories: ${totals.calories} kcal\nProtein: ${totals.protein}g\nCarbs: ${totals.carbs}g\nFat: ${totals.fat}g\n\nMeals: ${meals.length} logged today`;
 
     await Clipboard.setStringAsync(summary);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    // Alert.alert("Copied!", "Guilt Giver summary copied to clipboard.");
 
     Toast.show({
       type: "success",
@@ -48,13 +47,12 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: "row",
     alignItems: "center",
-    // alignSelf: "flex-start",
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.depth,
     borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
     justifyContent: "center",
     marginTop: 16,
     gap: 8,
@@ -65,10 +63,6 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   iconContainer: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: colors.sutleDepth,
     justifyContent: "center",
     alignItems: "center",
   },

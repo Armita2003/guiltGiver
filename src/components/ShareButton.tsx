@@ -14,7 +14,7 @@ export default function ShareButton({ meals }: ShareButtonProps) {
     const totals = computeTotals(meals);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     await Share.share({
-      message: `Guilt Giver Daily Summary\n\nCalories: ${totals.calories}\nProtein: ${totals.protein}g\nCarbs: ${totals.carbs}g\nFat: ${totals.fat}g\n\nMeals: ${meals.length} logged today`,
+      message: `Guilt Giver Daily Summary\n\nCalories: ${totals.calories} kcal\nProtein: ${totals.protein}g\nCarbs: ${totals.carbs}g\nFat: ${totals.fat}g\n\nMeals: ${meals.length} logged today`,
     });
   };
 
@@ -25,7 +25,7 @@ export default function ShareButton({ meals }: ShareButtonProps) {
       activeOpacity={0.75}
       accessibilityLabel="Share"
     >
-      <Ionicons name="share-social-sharp" size={20} color={colors.white} />
+      <Ionicons name="share-social-sharp" size={24} color={colors.white} />
     </TouchableOpacity>
   );
 }
