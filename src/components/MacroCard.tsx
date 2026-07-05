@@ -4,6 +4,7 @@ import { Bar } from "react-native-progress";
 import { cardStyles } from "./MacroCard.styles";
 type MacroCardProps = {
   label: string;
+  unit: string;
   value: string;
   secondaryValue: string;
   color: string;
@@ -13,18 +14,13 @@ export default function MacroCard({
   label,
   value,
   secondaryValue,
+  unit,
   color,
   halfWidth = false,
 }: MacroCardProps) {
-  const current = parseFloat(value) || 0;
-  const max = parseFloat(secondaryValue) || 1; // Avoid division by zero
-
-  // 2. Calculate progress (0.0 to 1.0)
-  let progress = current / max;
-
-  // 3. Clamp value between 0 and 1
-  if (progress < 0) progress = 0;
-  if (progress > 1) progress = 1;
+  const current = Number(value) || 0;
+  const max = Number(secondaryValue) || 0;
+  const progress = max > 0 ? Math.min(1, current / max) : 0;
 
   return (
     <View
@@ -46,7 +42,10 @@ export default function MacroCard({
         }}
       >
         <Text style={cardStyles.value}>{value}</Text>
-        <Text style={cardStyles.secondaryValue}> / {secondaryValue}</Text>
+        <Text style={cardStyles.secondaryValue}>
+          / {secondaryValue}
+          {unit}
+        </Text>
       </View>
       <Bar
         progress={progress}

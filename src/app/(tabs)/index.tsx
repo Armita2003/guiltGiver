@@ -89,15 +89,15 @@ export default function HomeScreen() {
         overScrollMode="always"
       >
         {/* <Text style={globalStyles.title}>Guilt Giver</Text> */}
-        <View style={{ gap: 4, marginBottom: 24 }}>
+
+        <View style={(globalStyles.sectionSpacing, { marginBottom: 24 })}>
           <Text style={globalStyles.subtitle}>SYSTEM STATUS: UNIMPRESSED</Text>
           <Text style={globalStyles.sectionTitle}>Feed the machine.</Text>
           <Text style={globalStyles.secondarySubTitle}>
             Did you really need that second snack? Your data says otherwise.
           </Text>
-          {/* <HomeHeader /> */}
         </View>
-        <MacroGrid />
+        <MacroGrid meals={meals} />
         <RecentMeals meals={meals} />
       </ScrollView>
       <Modal

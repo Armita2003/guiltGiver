@@ -24,18 +24,20 @@ export default function RecentMeals({ meals }: RecentMealsProps) {
           No meals logged yet.
         </Text>
       ) : (
-        meals.map((meal) => (
-          <MealItem
-            key={meal.id}
-            time={meal.createdAt}
-            name={meal.name}
-            calories={meal.calories}
-            icon={categoryToIcon[meal.selectedCategory]}
-            pro={meal.protein}
-            carb={meal.carbs}
-            fat={meal.fat}
-          />
-        ))
+        meals
+          .slice(0, 5)
+          .map((meal) => (
+            <MealItem
+              key={meal.id}
+              time={meal.createdAt}
+              name={meal.name}
+              calories={meal.calories}
+              icon={categoryToIcon[meal.selectedCategory]}
+              pro={meal.protein}
+              carb={meal.carbs}
+              fat={meal.fat}
+            />
+          ))
       )}
     </View>
   );
