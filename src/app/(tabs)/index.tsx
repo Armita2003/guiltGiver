@@ -39,7 +39,7 @@ export default function HomeScreen() {
   const loadMeals = async () => {
     const data = await getMeals();
     setMeals(data);
-    console.log("Loaded meals:", data);
+    // console.log("Loaded meals:", data);
   };
 
   useFocusEffect(
@@ -98,7 +98,7 @@ export default function HomeScreen() {
           </Text>
         </View>
         <MacroGrid meals={meals} />
-        <RecentMeals meals={meals} />
+        <RecentMeals meals={meals} onDelete={loadMeals} />
       </ScrollView>
       <Modal
         visible={menuOpen}

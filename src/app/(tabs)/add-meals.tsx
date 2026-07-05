@@ -2,6 +2,7 @@ import InputWithSuffix from "@/components/AddMealsComponents/InputWithSuffix";
 import { addMeal, MealCategory } from "@/storage/meals";
 import { colors, fonts, globalStyles } from "@/styles/global";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -17,7 +18,6 @@ import {
   View,
 } from "react-native";
 import Toast from "react-native-toast-message";
-
 type IconName = "dumbbell" | "food" | "leaf" | "cookie" | "cup";
 
 export default function AddMealScreen() {
@@ -64,6 +64,8 @@ export default function AddMealScreen() {
     setCarbs("");
     setFat("");
     setSelectedCategory(null);
+
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
     Toast.show({
       type: "success",
@@ -171,7 +173,11 @@ export default function AddMealScreen() {
                   <MaterialCommunityIcons
                     name={item.icon}
                     size={28}
-                    color={colors.button}
+                    color={
+                      selectedCategory === item.id
+                        ? colors.button
+                        : colors.textSecondary
+                    }
                   />
                 </View>
 

@@ -6,9 +6,10 @@ import { MealItemStyles } from "./MealItem.styles";
 
 type RecentMealsProps = {
   meals: Meal[];
+  onDelete: () => void;
 };
 
-export default function RecentMeals({ meals }: RecentMealsProps) {
+export default function RecentMeals({ meals, onDelete }: RecentMealsProps) {
   return (
     <View style={{ marginVertical: 24, gap: 8 }}>
       <Text style={MealItemStyles.title}>RECENT FAILURES</Text>
@@ -28,7 +29,7 @@ export default function RecentMeals({ meals }: RecentMealsProps) {
           .slice(0, 5)
           .map((meal) => (
             <MealItem
-              key={meal.id}
+              id={meal.id}
               time={meal.createdAt}
               name={meal.name}
               calories={meal.calories}
@@ -36,6 +37,7 @@ export default function RecentMeals({ meals }: RecentMealsProps) {
               pro={meal.protein}
               carb={meal.carbs}
               fat={meal.fat}
+              onDelete={onDelete}
             />
           ))
       )}

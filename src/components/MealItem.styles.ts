@@ -51,4 +51,54 @@ export const MealItemStyles = StyleSheet.create({
   statsContainer: {
     alignItems: "flex-end",
   },
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.7)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  modalCard: {
+    width: "100%",
+    maxWidth: 360,
+    backgroundColor: "#161616",
+    borderWidth: 1,
+    borderColor: "#282825",
+    borderRadius: 14,
+    padding: 20,
+  },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#ffffff",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  modalText: {
+    fontSize: 14,
+    color: colors.textTertiary,
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 12,
+  },
+  button: {
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+  },
+  cancelButton: {
+    backgroundColor: "#282825",
+  },
+  deleteButton: {
+    backgroundColor: colors.alert,
+  },
+  buttonText: {
+    color: "#ffffff",
+    fontWeight: "600",
+    fontSize: 14,
+  },
 });
