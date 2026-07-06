@@ -67,7 +67,9 @@ export default function ProfileScreen() {
               <Text
                 style={[
                   styles.statValue,
-                  { color: isAiUnlocked ? colors.button : colors.textSecondary },
+                  {
+                    color: isAiUnlocked ? colors.button : colors.textSecondary,
+                  },
                 ]}
               >
                 {isAiUnlocked ? "Unlocked" : "Locked"}
@@ -88,7 +90,10 @@ export default function ProfileScreen() {
         <NutritionGoalsCard />
 
         {user ? (
-          <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
+          <TouchableOpacity
+            style={styles.signOutButton}
+            onPress={handleSignOut}
+          >
             <Text style={styles.signOutText}>Sign Out</Text>
           </TouchableOpacity>
         ) : (
@@ -96,7 +101,9 @@ export default function ProfileScreen() {
             style={styles.primaryButton}
             onPress={() => setAuthModalVisible(true)}
           >
-            <Text style={styles.primaryButtonText}>Sign In / Create Account</Text>
+            <Text style={styles.primaryButtonText}>
+              Sign In / Create Account
+            </Text>
           </TouchableOpacity>
         )}
 
@@ -107,7 +114,7 @@ export default function ProfileScreen() {
           </Text>
         )}
 
-        <View
+        {/* <View
             style={{
               marginTop: "auto",
               paddingTop: 12,
@@ -128,7 +135,7 @@ export default function ProfileScreen() {
             >
               Your data. Your guilt. Your choice.
             </Text>
-          </View>
+          </View> */}
       </ScrollView>
 
       <AuthModal

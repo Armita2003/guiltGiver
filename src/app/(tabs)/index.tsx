@@ -6,10 +6,10 @@ import SystemStatus from "@/components/SystemStatus";
 import { getMeals } from "@/storage/mealStorage";
 import { Meal } from "@/types/nutrition";
 import { colors, globalStyles } from "@/styles/global";
+import { on } from "@/utils/events";
 import { useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ScrollView } from "react-native";
-import { emit } from "@/utils/events";
 
 export default function HomeScreen() {
   const [meals, setMeals] = useState<Meal[]>([]);
@@ -17,8 +17,11 @@ export default function HomeScreen() {
   const loadMeals = async () => {
     const data = await getMeals();
     setMeals(data);
-    emit("meals:updated", data);
   };
+
+  useEffect(() => {
+    return on("meals:updated", setMeals);
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -42,7 +45,7 @@ export default function HomeScreen() {
       <MacroGrid meals={meals} />
       <CopyButton meals={meals} />
       <ReminderToggle />
-      <RecentMeals meals={meals} onDelete={loadMeals} />
+      <RecentMeals meals={meals} onDelete={() => {}} />
     </ScrollView>
   );
 }

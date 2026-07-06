@@ -1,4 +1,3 @@
-import AppSidebar from "@/components/AppSidebar";
 import ShareButton from "@/components/ShareButton";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { getMeals } from "@/storage/mealStorage";
@@ -144,10 +143,16 @@ export default function RootLayout() {
             //   </Pressable>
             // ),
             headerRight: () => (
-              <View style={{ flexDirection: "row", gap: 16, alignItems: "center" }}>
-              <ShareButton meals={meals} />
+              <View
+                style={{ flexDirection: "row", gap: 16, alignItems: "center" }}
+              >
+                <ShareButton meals={meals} />
                 <Pressable onPress={() => router.push("/profile")}>
-                  <Ionicons name="person-circle-outline" size={28} color={colors.white} />
+                  <Ionicons
+                    name="person-circle-outline"
+                    size={28}
+                    color={colors.white}
+                  />
                 </Pressable>
               </View>
             ),
@@ -155,7 +160,6 @@ export default function RootLayout() {
           }}
         />
       </Stack>
-      <AppSidebar />
       <Toast config={toastConfig} bottomOffset={90} />
     </AuthProvider>
   );

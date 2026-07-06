@@ -2,13 +2,13 @@ import { requestJsonCompletion } from "@/services/openRouterService";
 import { getMacroGoals } from "@/storage/nutritionGoalsStorage";
 import { Meal } from "@/types/nutrition";
 import { DEFAULT_MACRO_GOALS, MacroGoals } from "@/types/nutritionGoals";
-import { calculateDailyTotals } from "@/utils/nutrition";
 import {
   formatDateSectionLabel,
   getDateKey,
   groupMealsByDate,
   mealsDataHash,
 } from "@/utils/mealDates";
+import { calculateDailyTotals } from "@/utils/nutrition";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type SystemStatusFeedback = {
@@ -28,11 +28,28 @@ const LOG_CACHE_PREFIX = "guilt:log:";
 const systemMemoryCache = new Map<string, SystemStatusFeedback>();
 const logMemoryCache = new Map<string, LogPageFeedback>();
 
-const EMPTY_SYSTEM: SystemStatusFeedback = {
+export const EMPTY_SYSTEM: SystemStatusFeedback = {
   statusLabel: "IDLE",
   title: "The machine is hungry.",
   subtitle: "Log something. Anything. We're judging either way.",
 };
+
+export function buildInstantSystemStatusFeedback(
+  meals: Meal[],
+  goals: MacroGoals = DEFAULT_MACRO_GOALS
+): SystemStatusFeedback {
+  if (meals.length === 0) return EMPTY_SYSTEM;
+
+  const totals = calculateDailyTotals(meals);
+  const overTarget = totals.calories > goals.calories;
+  return {
+    statusLabel: overTarget ? "CRITICAL" : "UNIMPRESSED",
+    title: overTarget ? "Over budget." : "The machine is watching.",
+    subtitle: overTarget
+      ? `${totals.calories} calories and counting. Impressive, in the worst way.`
+      : "Your intake is still under review. The evidence is not flattering.",
+  };
+}
 
 const FALLBACK_DAY_LABELS = [
   "PATHETIC DISPLAY",
@@ -86,9 +103,16 @@ export async function getSystemStatusFeedback(
   if (meals.length === 0) return EMPTY_SYSTEM;
 
   const hash = mealsDataHash(meals);
+  const memoryCached = systemMemoryCache.get(hash);
+  if (memoryCached) return memoryCached;
+
   const cacheKey = `${SYSTEM_CACHE_PREFIX}${hash}`;
   const cached = await AsyncStorage.getItem(cacheKey);
-  if (cached) return JSON.parse(cached) as SystemStatusFeedback;
+  if (cached) {
+    const feedback = JSON.parse(cached) as SystemStatusFeedback;
+    systemMemoryCache.set(hash, feedback);
+    return feedback;
+  }
 
   try {
     const goals = await getMacroGoals();
@@ -111,11 +135,11 @@ Return JSON:
       statusLabel: String(result.statusLabel ?? "UNIMPRESSED").toUpperCase(),
       title: String(result.title ?? "Feed the machine."),
       subtitle: String(
-        result.subtitle ??
-          "Your data says you already know what you did."
+        result.subtitle ?? "Your data says you already know what you did."
       ),
     };
 
+    systemMemoryCache.set(hash, feedback);
     await AsyncStorage.setItem(cacheKey, JSON.stringify(feedback));
     return feedback;
   } catch {
@@ -124,10 +148,10 @@ Return JSON:
     const overTarget = totals.calories > goals.calories;
     return {
       statusLabel: overTarget ? "CRITICAL" : "UNIMPRESSED",
-      title: "Feed the machine.",
+      title: "The machine is watching.",
       subtitle: overTarget
         ? `${totals.calories} calories and counting. Impressive, in the worst way.`
-        : "Did you really need that second snack? Your data says otherwise.",
+        : "Your intake is still under review. The evidence is not flattering.",
     };
   }
 }
@@ -211,8 +235,7 @@ export function getDayLabel(
   dateKey: string
 ): string {
   return (
-    feedback.dayLabels[dateKey] ??
-    pickFallback(FALLBACK_DAY_LABELS, dateKey)
+    feedback.dayLabels[dateKey] ?? pickFallback(FALLBACK_DAY_LABELS, dateKey)
   ).toUpperCase();
 }
 

@@ -1,9 +1,19 @@
+function getRedisConfig() {
+  const url =
+    process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL;
+  const token =
+    process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN;
+
+  return { url, token };
+}
+
 async function redisCommand(command: string[]): Promise<unknown> {
-  const url = process.env.KV_REST_API_URL;
-  const token = process.env.KV_REST_API_TOKEN;
+  const { url, token } = getRedisConfig();
 
   if (!url || !token) {
-    throw new Error("Storage not configured. Add KV_REST_API_URL and KV_REST_API_TOKEN in Vercel.");
+    throw new Error(
+      "Storage not configured. Connect Upstash Redis in Vercel and redeploy."
+    );
   }
 
   const response = await fetch(url, {

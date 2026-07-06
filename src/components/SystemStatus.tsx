@@ -1,52 +1,84 @@
 import {
   buildInstantSystemStatusFeedback,
-  EMPTY_SYSTEM,
   getSystemStatusFeedback,
 } from "@/services/guiltFeedbackService";
 import { getMacroGoals } from "@/storage/nutritionGoalsStorage";
-import { Meal } from "@/types/nutrition";
 import { globalStyles } from "@/styles/global";
-import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { Meal } from "@/types/nutrition";
+import { DEFAULT_MACRO_GOALS } from "@/types/nutritionGoals";
+import { on } from "@/utils/events";
+import { mealsDataHash } from "@/utils/mealDates";
+import { useEffect, useMemo, useState } from "react";
+import { ActivityIndicator, Text, View } from "react-native";
 
 type SystemStatusProps = {
   meals: Meal[];
 };
 
 export default function SystemStatus({ meals }: SystemStatusProps) {
-  const [statusLabel, setStatusLabel] = useState(EMPTY_SYSTEM.statusLabel);
-  const [title, setTitle] = useState(EMPTY_SYSTEM.title);
-  const [subtitle, setSubtitle] = useState(EMPTY_SYSTEM.subtitle);
+  const [goals, setGoals] = useState(DEFAULT_MACRO_GOALS);
+  const [aiFeedback, setAiFeedback] = useState<{
+    hash: string;
+    feedback: ReturnType<typeof buildInstantSystemStatusFeedback>;
+  } | null>(null);
+  const [isLoadingFeedback, setIsLoadingFeedback] = useState(false);
+
+  const mealsHash = mealsDataHash(meals);
+
+  const instant = useMemo(
+    () => buildInstantSystemStatusFeedback(meals, goals),
+    [meals, goals]
+  );
+
+  const loadingFeedback = useMemo<
+    ReturnType<typeof buildInstantSystemStatusFeedback>
+  >(
+    () => ({
+      statusLabel: "LOADING",
+      title: "Checking your damage…",
+      subtitle: "The machine is thinking.",
+    }),
+    []
+  );
+
+  const display = useMemo(() => {
+    if (aiFeedback?.hash === mealsHash) return aiFeedback.feedback;
+    if (isLoadingFeedback && aiFeedback) return aiFeedback.feedback;
+    if (isLoadingFeedback) return loadingFeedback;
+    return instant;
+  }, [aiFeedback, instant, isLoadingFeedback, loadingFeedback, mealsHash]);
+
+  useEffect(() => {
+    getMacroGoals().then(setGoals);
+    return on("goals:updated", setGoals);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
 
-    const applyInstant = async () => {
-      const goals = await getMacroGoals();
-      if (cancelled) return;
-      const instant = buildInstantSystemStatusFeedback(meals, goals);
-      setStatusLabel(instant.statusLabel);
-      setTitle(instant.title);
-      setSubtitle(instant.subtitle);
-    };
+    setIsLoadingFeedback(true);
 
-    applyInstant();
-
-    getSystemStatusFeedback(meals).then((feedback) => {
-      if (cancelled) return;
-      setStatusLabel(feedback.statusLabel);
-      setTitle(feedback.title);
-      setSubtitle(feedback.subtitle);
-    });
+    getSystemStatusFeedback(meals)
+      .then((feedback) => {
+        if (cancelled) return;
+        setAiFeedback({ hash: mealsHash, feedback });
+        setIsLoadingFeedback(false);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setIsLoadingFeedback(false);
+      });
 
     return () => {
       cancelled = true;
     };
-  }, [meals]);
+  }, [meals, mealsHash]);
 
   return (
     <View style={(globalStyles.sectionSpacing, { marginBottom: 24 })}>
-      <Text style={globalStyles.subtitle}>SYSTEM STATUS: {statusLabel}</Text>
+      <Text style={globalStyles.subtitle}>
+        SYSTEM STATUS: {display.statusLabel}
+      </Text>
       <View
         style={{
           flexDirection: "row",
@@ -55,9 +87,12 @@ export default function SystemStatus({ meals }: SystemStatusProps) {
           alignItems: "center",
         }}
       >
-        <Text style={globalStyles.sectionTitle}>{title}</Text>
+        <Text style={globalStyles.sectionTitle}>{display.title}</Text>
+        {isLoadingFeedback ? (
+          <ActivityIndicator size="small" color="#ffffff" />
+        ) : null}
       </View>
-      <Text style={globalStyles.secondarySubTitle}>{subtitle}</Text>
+      <Text style={globalStyles.secondarySubTitle}>{display.subtitle}</Text>
     </View>
   );
 }
