@@ -1,6 +1,6 @@
-import { Meal } from "@/storage/meals";
+import { Meal } from "@/types/nutrition";
 import { colors, fonts } from "@/styles/global";
-import { computeTotals } from "@/utils/meals";
+import { calculateDailyTotals } from "@/utils/nutrition";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
@@ -13,7 +13,7 @@ type CopyButtonProps = {
 
 export default function CopyButton({ meals }: CopyButtonProps) {
   const handleCopy = async () => {
-    const totals = computeTotals(meals);
+    const totals = calculateDailyTotals(meals);
 
     const summary = `Guilt Giver Daily Summary\n\nCalories: ${totals.calories} kcal\nProtein: ${totals.protein}g\nCarbs: ${totals.carbs}g\nFat: ${totals.fat}g\n\nMeals: ${meals.length} logged today`;
 

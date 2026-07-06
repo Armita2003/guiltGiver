@@ -21,7 +21,7 @@ export const scheduleMealReminders = async () => {
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "GuiltGiver",
-      body: "Don't forget to log your Breakfast!",
+      body: "Don't forget to log your breakfast!",
     },
     trigger: {
       type: Notifications.SchedulableTriggerInputTypes.DAILY,
@@ -33,7 +33,7 @@ export const scheduleMealReminders = async () => {
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "GuiltGiver",
-      body: "Don't forget to log your Lunch!",
+      body: "Don't forget to log your lunch!",
     },
     trigger: {
       type: Notifications.SchedulableTriggerInputTypes.DAILY,
@@ -44,7 +44,7 @@ export const scheduleMealReminders = async () => {
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "GuiltGiver",
-      body: "Time to log your Dinner!",
+      body: "Time to log your dinner!",
     },
     trigger: {
       type: Notifications.SchedulableTriggerInputTypes.DAILY,

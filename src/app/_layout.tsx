@@ -1,34 +1,19 @@
+import AppSidebar from "@/components/AppSidebar";
 import ShareButton from "@/components/ShareButton";
-import { getMeals, Meal } from "@/storage/meals";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { getMeals } from "@/storage/mealStorage";
 import { colors, fonts, globalStyles } from "@/styles/global";
+import { Meal } from "@/types/nutrition";
+import { on } from "@/utils/events";
 import { Ionicons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
-import { Stack, useFocusEffect } from "expo-router";
+import { router, Stack, useFocusEffect } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback, useEffect, useState } from "react";
-import { Pressable, Text } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
-type EventMap = {
-  "menu:open": () => void;
-  "meals:updated": (meals: Meal[]) => void;
-};
-type ListenerMap = { [K in keyof EventMap]?: Set<(...args: any[]) => void> };
-const listeners: ListenerMap = {};
 
-export const emit = <K extends keyof EventMap>(
-  event: K,
-  ...args: Parameters<EventMap[K]>
-) => {
-  listeners[event]?.forEach((fn) => fn(...args));
-};
-
-export const on = <K extends keyof EventMap>(event: K, fn: EventMap[K]) => {
-  if (!listeners[event]) listeners[event] = new Set();
-  listeners[event]!.add(fn as (...args: any[]) => void);
-  return () => {
-    listeners[event]?.delete(fn as (...args: any[]) => void);
-  };
-};
+export { emit, on } from "@/utils/events";
 
 export default function RootLayout() {
   const [meals, setMeals] = useState<Meal[]>([]);
@@ -129,7 +114,7 @@ export default function RootLayout() {
   }
 
   return (
-    <>
+    <AuthProvider>
       <Stack
         screenOptions={{
           // Global header styles (applies to all screens)
@@ -150,27 +135,28 @@ export default function RootLayout() {
                 Guilt Giver
               </Text>
             ),
-            headerTitleAlign: "center", // Center the title
+            // headerTitleAlign: "center", // Center the title
 
             // ✅ Hamburger menu on the left
-            headerLeft: () => (
-              <Pressable onPress={() => emit("menu:open")}>
-                <Ionicons name="menu" size={24} color={colors.white} />
-              </Pressable>
-            ),
+            // headerLeft: () => (
+            //   <Pressable onPress={() => emit("menu:open")}>
+            //     <Ionicons name="menu" size={24} color={colors.white} />
+            //   </Pressable>
+            // ),
             headerRight: () => (
+              <View style={{ flexDirection: "row", gap: 16, alignItems: "center" }}>
               <ShareButton meals={meals} />
-              // // <>
-              //   {/* <Pressable onPress={() => emit("menu:open")}>
-              //     <Ionicons name="settings" size={24} color={colors.white} />
-              //   </Pressable> */}
-              // {/* </> */}
+                <Pressable onPress={() => router.push("/profile")}>
+                  <Ionicons name="person-circle-outline" size={28} color={colors.white} />
+                </Pressable>
+              </View>
             ),
             headerShadowVisible: false,
           }}
         />
       </Stack>
+      <AppSidebar />
       <Toast config={toastConfig} bottomOffset={90} />
-    </>
+    </AuthProvider>
   );
 }

@@ -1,4 +1,5 @@
-import { deleteMeal } from "@/storage/meals";
+import { deleteMeal } from "@/storage/mealStorage";
+import { formatMealTime } from "@/utils/mealDates";
 import { colors } from "@/styles/global";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
@@ -6,6 +7,7 @@ import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import ConfirmationModal from "./ConfirmationModal";
 import { MealItemStyles } from "./MealItem.styles";
+
 type MealItemProps = {
   id: string;
   name: string;
@@ -31,35 +33,29 @@ export default function MealItem({
 }: MealItemProps) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const handleLongPress = async () => {
-    setShowDeleteModal(true);
-  };
   return (
     <>
-      <TouchableOpacity onLongPress={handleLongPress}>
-        <View
-          style={[
-            MealItemStyles.container,
-            {
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            },
-          ]}
-        >
-          <View style={{ flexDirection: "row", gap: 16, alignItems: "center" }}>
-            <View style={MealItemStyles.iconContainer}>
-              <MaterialCommunityIcons
-                name={icon as any}
-                size={28}
-                color={colors.white}
-              />
-            </View>
-            <View>
-              <Text style={MealItemStyles.name}>{name}</Text>
-              <Text style={MealItemStyles.time}>{time}</Text>
-            </View>
+      <TouchableOpacity onLongPress={() => setShowDeleteModal(true)}>
+        <View style={MealItemStyles.container}>
+          <View style={MealItemStyles.iconContainer}>
+            <MaterialCommunityIcons
+              name={icon as any}
+              size={28}
+              color={colors.white}
+            />
           </View>
+
+          <View style={MealItemStyles.detailsContainer}>
+            <Text
+              style={MealItemStyles.name}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {name}
+            </Text>
+            <Text style={MealItemStyles.time}>{formatMealTime(time)}</Text>
+          </View>
+
           <View style={MealItemStyles.statsContainer}>
             <Text style={MealItemStyles.calories}>{calories} CAL</Text>
             <View style={MealItemStyles.macroContainer}>
@@ -78,14 +74,13 @@ export default function MealItem({
         message={`Are you sure you want to delete "${name}"?`}
         cancelLabel="Cancel"
         confirmLabel="Delete"
-        onCancel={() => setShowDeleteModal(false)}
         onConfirm={async () => {
           await deleteMeal(id);
           setShowDeleteModal(false);
-
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           onDelete();
         }}
+        onCancel={() => setShowDeleteModal(false)}
       />
     </>
   );

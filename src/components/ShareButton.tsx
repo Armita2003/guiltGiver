@@ -1,6 +1,6 @@
-import { Meal } from "@/storage/meals";
 import { colors } from "@/styles/global";
-import { computeTotals } from "@/utils/meals";
+import { Meal } from "@/types/nutrition";
+import { calculateDailyTotals } from "@/utils/nutrition";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { Share, StyleSheet, TouchableOpacity } from "react-native";
@@ -11,7 +11,7 @@ type ShareButtonProps = {
 
 export default function ShareButton({ meals }: ShareButtonProps) {
   const handleShare = async () => {
-    const totals = computeTotals(meals);
+    const totals = calculateDailyTotals(meals);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     await Share.share({
       message: `Guilt Giver Daily Summary\n\nCalories: ${totals.calories} kcal\nProtein: ${totals.protein}g\nCarbs: ${totals.carbs}g\nFat: ${totals.fat}g\n\nMeals: ${meals.length} logged today`,
@@ -32,8 +32,8 @@ export default function ShareButton({ meals }: ShareButtonProps) {
 
 const styles = StyleSheet.create({
   iconContainer: {
-    width: 40,
-    height: 40,
+    // width: 40,
+    // height: 40,
     justifyContent: "center",
     alignItems: "center",
   },

@@ -1,4 +1,4 @@
-import { categoryToIcon, Meal } from "@/storage/meals";
+import { categoryToIcon, Meal } from "@/types/nutrition";
 import { globalStyles } from "@/styles/global";
 import { Text, View } from "react-native";
 import MealItem from "./MealItem";
@@ -23,12 +23,12 @@ export default function RecentMeals({ meals, onDelete }: RecentMealsProps) {
               key={meal.id}
               id={meal.id}
               time={meal.createdAt}
-              name={meal.name}
-              calories={meal.calories}
-              icon={categoryToIcon[meal.selectedCategory]}
-              pro={meal.protein}
-              carb={meal.carbs}
-              fat={meal.fat}
+              name={meal.mealName}
+              calories={meal.totalCalories}
+              icon={categoryToIcon[meal.category]}
+              pro={meal.totalProtein}
+              carb={meal.totalCarbs}
+              fat={meal.totalFat}
               onDelete={onDelete}
             />
           ))
