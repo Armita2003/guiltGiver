@@ -1,5 +1,6 @@
+import AuthModal from "@/components/AuthModal";
 import ShareButton from "@/components/ShareButton";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { getMeals } from "@/storage/mealStorage";
 import { colors, fonts, globalStyles } from "@/styles/global";
 import { Meal } from "@/types/nutrition";
@@ -14,8 +15,36 @@ import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 
 export { emit, on } from "@/utils/events";
 
+function HeaderRight({
+  meals,
+  onAvatarPress,
+}: {
+  meals: Meal[];
+  onAvatarPress: () => void;
+}) {
+  const { user } = useAuth();
+
+  return (
+    <View style={{ flexDirection: "row", gap: 16, alignItems: "center" }}>
+      <ShareButton meals={meals} />
+      <Pressable
+        onPress={() => {
+          if (user) {
+            router.push("/profile");
+          } else {
+            onAvatarPress();
+          }
+        }}
+      >
+        <Ionicons name="person-circle-outline" size={28} color={colors.white} />
+      </Pressable>
+    </View>
+  );
+}
+
 export default function RootLayout() {
   const [meals, setMeals] = useState<Meal[]>([]);
+  const [authModalVisible, setAuthModalVisible] = useState(false);
   const [fontsLoaded] = useFonts({
     [fonts.bold]: require("../../assets/fonts/Montserrat-Bold.ttf"),
   });
@@ -143,24 +172,20 @@ export default function RootLayout() {
             //   </Pressable>
             // ),
             headerRight: () => (
-              <View
-                style={{ flexDirection: "row", gap: 16, alignItems: "center" }}
-              >
-                <ShareButton meals={meals} />
-                <Pressable onPress={() => router.push("/profile")}>
-                  <Ionicons
-                    name="person-circle-outline"
-                    size={28}
-                    color={colors.white}
-                  />
-                </Pressable>
-              </View>
+              <HeaderRight
+                meals={meals}
+                onAvatarPress={() => setAuthModalVisible(true)}
+              />
             ),
             headerShadowVisible: false,
           }}
         />
       </Stack>
       <Toast config={toastConfig} bottomOffset={90} />
+      <AuthModal
+        visible={authModalVisible}
+        onClose={() => setAuthModalVisible(false)}
+      />
     </AuthProvider>
   );
 }

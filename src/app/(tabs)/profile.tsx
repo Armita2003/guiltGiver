@@ -26,6 +26,12 @@ export default function ProfileScreen() {
     });
   };
 
+  const handleAiEstimatePress = () => {
+    if (!user) {
+      setAuthModalVisible(true);
+    }
+  };
+
   return (
     <>
       <ScrollView
@@ -56,7 +62,12 @@ export default function ProfileScreen() {
             </View>
           </View>
 
-          <View style={styles.statRow}>
+          <TouchableOpacity
+            style={styles.statRow}
+            activeOpacity={isAiUnlocked ? 1 : 0.8}
+            disabled={isAiUnlocked}
+            onPress={handleAiEstimatePress}
+          >
             <Text style={styles.statLabel}>AI Estimate</Text>
             <View style={styles.badgeRow}>
               <MaterialCommunityIcons
@@ -75,44 +86,34 @@ export default function ProfileScreen() {
                 {isAiUnlocked ? "Unlocked" : "Locked"}
               </Text>
             </View>
-          </View>
-
-          {user?.marketingConsent && (
-            <View style={styles.consentBanner}>
-              <Ionicons name="mail-outline" size={16} color={colors.button} />
-              <Text style={styles.consentBannerText}>
-                You're opted in for occasional updates.
+          </TouchableOpacity>
+          {user ? (
+            <TouchableOpacity
+              style={styles.signOutButton}
+              onPress={handleSignOut}
+            >
+              <Text style={styles.signOutText}>Sign Out</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.primaryButton}
+              onPress={() => setAuthModalVisible(true)}
+            >
+              <Text style={styles.primaryButtonText}>
+                Sign In / Create Account
               </Text>
-            </View>
+            </TouchableOpacity>
+          )}
+
+          {!user && (
+            <Text style={styles.hint}>
+              Create an account with email and password. Meals are saved to your
+              account on this device.
+            </Text>
           )}
         </View>
 
         <NutritionGoalsCard />
-
-        {user ? (
-          <TouchableOpacity
-            style={styles.signOutButton}
-            onPress={handleSignOut}
-          >
-            <Text style={styles.signOutText}>Sign Out</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            style={styles.primaryButton}
-            onPress={() => setAuthModalVisible(true)}
-          >
-            <Text style={styles.primaryButtonText}>
-              Sign In / Create Account
-            </Text>
-          </TouchableOpacity>
-        )}
-
-        {!user && (
-          <Text style={styles.hint}>
-            Create an account with email and password. Meals are saved to your
-            account on this device.
-          </Text>
-        )}
 
         {/* <View
             style={{

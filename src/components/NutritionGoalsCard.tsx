@@ -1,4 +1,5 @@
 import InputWithSuffix from "@/components/AddMealsComponents/InputWithSuffix";
+import AuthModal from "@/components/AuthModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { estimateMacroGoals } from "@/services/nutritionGoalsService";
 import {
@@ -49,6 +50,7 @@ const SEX_OPTIONS: { id: Sex; label: string }[] = [
 
 export default function NutritionGoalsCard() {
   const { isAiUnlocked } = useAuth();
+  const [authModalVisible, setAuthModalVisible] = useState(false);
   const [mode, setMode] = useState<GoalsMode>("manual");
   const [calories, setCalories] = useState("");
   const [protein, setProtein] = useState("");
@@ -73,6 +75,12 @@ export default function NutritionGoalsCard() {
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (!isAiUnlocked && mode === "ai") {
+      setMode("manual");
+    }
+  }, [isAiUnlocked, mode]);
 
   const setGoalsFields = (goals: MacroGoals) => {
     setCalories(String(goals.calories));
@@ -159,6 +167,15 @@ export default function NutritionGoalsCard() {
     emit("goals:updated", goals);
   };
 
+  const handleSwitchMode = (newMode: GoalsMode) => {
+    if (newMode === "ai" && !isAiUnlocked) {
+      setAuthModalVisible(true);
+      return;
+    }
+
+    setMode(newMode);
+  };
+
   const handleSaveManual = async () => {
     const goals = parseGoals();
     if (!goals) return;
@@ -209,7 +226,9 @@ export default function NutritionGoalsCard() {
       Toast.show({
         type: "error",
         text2:
-          error instanceof Error ? error.message : "Failed to calculate targets.",
+          error instanceof Error
+            ? error.message
+            : "Failed to calculate targets.",
         position: "bottom",
       });
     } finally {
@@ -227,17 +246,20 @@ export default function NutritionGoalsCard() {
       <View style={styles.modeToggle}>
         <TouchableOpacity
           style={[styles.modeButton, mode === "manual" && styles.modeActive]}
-          onPress={() => setMode("manual")}
+          onPress={() => handleSwitchMode("manual")}
         >
           <Text
-            style={[styles.modeText, mode === "manual" && styles.modeTextActive]}
+            style={[
+              styles.modeText,
+              mode === "manual" && styles.modeTextActive,
+            ]}
           >
             Manual
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.modeButton, mode === "ai" && styles.modeActive]}
-          onPress={() => setMode("ai")}
+          onPress={() => handleSwitchMode("ai")}
         >
           <View style={styles.modeButtonInner}>
             <Text
@@ -428,6 +450,10 @@ export default function NutritionGoalsCard() {
           </TouchableOpacity>
         </View>
       )}
+      <AuthModal
+        visible={authModalVisible}
+        onClose={() => setAuthModalVisible(false)}
+      />
     </View>
   );
 }

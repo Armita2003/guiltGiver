@@ -32,6 +32,7 @@ export default function AuthModal({
   const { signInWithEmail } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
   const [marketingConsent, setMarketingConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -110,15 +111,29 @@ export default function AuthModal({
               autoCorrect={false}
             />
             <Text style={styles.label}>Password</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="At least 6 characters"
-              placeholderTextColor={colors.gridColors.unfilled}
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-              autoCapitalize="none"
-            />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.input}
+                placeholder="At least 6 characters"
+                placeholderTextColor={colors.gridColors.unfilled}
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+                autoCapitalize="none"
+              />
+              <Pressable
+                style={styles.passwordToggle}
+                onPress={() => setShowPassword((prev) => !prev)}
+                hitSlop={8}
+              >
+                <Ionicons
+                  name={showPassword ? "eye-off" : "eye"}
+                  size={20}
+                  color={colors.textSecondary}
+                  style={{ alignSelf: "center" }}
+                />
+              </Pressable>
+            </View>
             {isRegister && (
               <ConsentCheckbox
                 checked={marketingConsent}
@@ -247,14 +262,28 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     textTransform: "uppercase",
   },
+  inputWrapper: {
+    position: "relative",
+  },
   input: {
     backgroundColor: colors.background,
     color: colors.text,
     padding: 14,
+    paddingRight: 44,
     borderRadius: 10,
     fontSize: 15,
     borderWidth: 1,
     borderColor: colors.depth,
+  },
+  passwordToggle: {
+    position: "absolute",
+    right: 12,
+    top: "32%",
+    // bottom: "50%",
+    transform: [{ translateY: -10 }],
+    padding: 8,
+    alignSelf: "center",
+    justifyContent: "center",
   },
   consentRow: {
     flexDirection: "row",
