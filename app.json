@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "guiltGiver",
+    "name": "Guilt Giver",
     "slug": "guiltGiver",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -29,6 +29,13 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Guilt Giver to access your photos to analyze meals.",
+          "cameraPermission": "Allow Guilt Giver to use your camera to analyze meals."
+        }
+      ],
       "expo-router",
       [
         "expo-splash-screen",

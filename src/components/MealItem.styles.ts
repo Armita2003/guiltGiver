@@ -19,6 +19,14 @@ export const MealItemStyles = StyleSheet.create({
     padding: 16,
     borderWidth: 1,
     borderColor: "#282825",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  detailsContainer: {
+    flex: 1,
+    minWidth: 0,
+    marginRight: 8,
   },
   name: {
     fontSize: 12,
@@ -50,6 +58,7 @@ export const MealItemStyles = StyleSheet.create({
   },
   statsContainer: {
     alignItems: "flex-end",
+    flexShrink: 0,
   },
   overlay: {
     flex: 1,

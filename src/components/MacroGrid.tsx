@@ -1,7 +1,11 @@
-import { Meal } from "@/storage/meals";
+import { getMacroGoals } from "@/storage/nutritionGoalsStorage";
+import { Meal } from "@/types/nutrition";
+import { DEFAULT_MACRO_GOALS, MacroGoals } from "@/types/nutritionGoals";
 import { colors } from "@/styles/global";
-import { computeTotals } from "@/utils/meals";
-import React from "react";
+import { on } from "@/utils/events";
+import { calculateDailyTotals } from "@/utils/nutrition";
+import { useFocusEffect } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 import MacroCard from "./MacroCard";
 import { gridStyles } from "./MacroGrid.styles";
@@ -11,14 +15,29 @@ type MacroGridProps = {
 };
 
 export default function MacroGrid({ meals }: MacroGridProps) {
-  const totals = computeTotals(meals);
+  const totals = calculateDailyTotals(meals);
+  const [goals, setGoals] = useState<MacroGoals>(DEFAULT_MACRO_GOALS);
+
+  const loadGoals = useCallback(async () => {
+    setGoals(await getMacroGoals());
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadGoals();
+    }, [loadGoals])
+  );
+
+  useEffect(() => {
+    return on("goals:updated", setGoals);
+  }, []);
 
   return (
     <View style={gridStyles.grid}>
       <MacroCard
         label="ENERGY OVERLOAD"
         value={`${totals.calories}`}
-        secondaryValue="2000"
+        secondaryValue={String(goals.calories)}
         unit=" kcal"
         color={colors.gridColors.primary}
       />
@@ -26,7 +45,7 @@ export default function MacroGrid({ meals }: MacroGridProps) {
         label="PROTEIN"
         value={`${totals.protein ?? 0}`}
         unit="g"
-        secondaryValue="150"
+        secondaryValue={String(goals.protein)}
         color={colors.gridColors.secondary}
         halfWidth
       />
@@ -34,7 +53,7 @@ export default function MacroGrid({ meals }: MacroGridProps) {
         label="CARBS"
         value={`${totals.carbs ?? 0}`}
         unit="g"
-        secondaryValue="250"
+        secondaryValue={String(goals.carbs)}
         color={colors.gridColors.tertiary}
         halfWidth
       />
@@ -42,7 +61,7 @@ export default function MacroGrid({ meals }: MacroGridProps) {
         label="FAT"
         value={`${totals.fat ?? 0}`}
         unit="g"
-        secondaryValue="65"
+        secondaryValue={String(goals.fat)}
         color={colors.gridColors.quaternary}
       />
     </View>

@@ -16,15 +16,15 @@ export default function TabLayout() {
           borderTopColor: colors.surface,
           borderTopWidth: 1,
         },
-        tabBarBackground() {
+        tabBarBackground: () => (
           <BlurView
             intensity={24}
             tint="dark"
             style={{
               flex: 1,
             }}
-          />;
-        },
+          />
+        ),
       }}
     >
       <Tabs.Screen
@@ -51,6 +51,16 @@ export default function TabLayout() {
           title: "All Meals",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="list" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          // href: null,
+          title: "Profile",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person-circle-outline" size={size} color={color} />
           ),
         }}
       />
