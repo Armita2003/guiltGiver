@@ -1,4 +1,5 @@
 import AuthModal from "@/components/AuthModal";
+import NutritionGoalsCard from "@/components/NutritionGoalsCard";
 import { useAuth } from "@/contexts/AuthContext";
 import { colors, globalStyles } from "@/styles/global";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -84,6 +85,8 @@ export default function ProfileScreen() {
           )}
         </View>
 
+        <NutritionGoalsCard />
+
         {user ? (
           <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
             <Text style={styles.signOutText}>Sign Out</Text>
@@ -138,7 +141,7 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   content: {
-    paddingBottom: 40,
+    paddingBottom: 80,
   },
   card: {
     marginTop: 20,

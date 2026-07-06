@@ -1,4 +1,9 @@
-import { getSystemStatusFeedback } from "@/services/guiltFeedbackService";
+import {
+  buildInstantSystemStatusFeedback,
+  EMPTY_SYSTEM,
+  getSystemStatusFeedback,
+} from "@/services/guiltFeedbackService";
+import { getMacroGoals } from "@/storage/nutritionGoalsStorage";
 import { Meal } from "@/types/nutrition";
 import { globalStyles } from "@/styles/global";
 import { useEffect, useState } from "react";
@@ -9,14 +14,23 @@ type SystemStatusProps = {
 };
 
 export default function SystemStatus({ meals }: SystemStatusProps) {
-  const [statusLabel, setStatusLabel] = useState("UNIMPRESSED");
-  const [title, setTitle] = useState("Feed the machine.");
-  const [subtitle, setSubtitle] = useState(
-    "Did you really need that second snack? Your data says otherwise."
-  );
+  const [statusLabel, setStatusLabel] = useState(EMPTY_SYSTEM.statusLabel);
+  const [title, setTitle] = useState(EMPTY_SYSTEM.title);
+  const [subtitle, setSubtitle] = useState(EMPTY_SYSTEM.subtitle);
 
   useEffect(() => {
     let cancelled = false;
+
+    const applyInstant = async () => {
+      const goals = await getMacroGoals();
+      if (cancelled) return;
+      const instant = buildInstantSystemStatusFeedback(meals, goals);
+      setStatusLabel(instant.statusLabel);
+      setTitle(instant.title);
+      setSubtitle(instant.subtitle);
+    };
+
+    applyInstant();
 
     getSystemStatusFeedback(meals).then((feedback) => {
       if (cancelled) return;

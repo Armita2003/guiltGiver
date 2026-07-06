@@ -1,8 +1,10 @@
 import { Meal } from "@/types/nutrition";
+import { MacroGoals } from "@/types/nutritionGoals";
 
 type EventMap = {
   "menu:open": () => void;
   "meals:updated": (meals: Meal[]) => void;
+  "goals:updated": (goals: MacroGoals) => void;
 };
 
 type ListenerMap = { [K in keyof EventMap]?: Set<(...args: any[]) => void> };

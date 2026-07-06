@@ -1,5 +1,7 @@
 import { requestJsonCompletion } from "@/services/openRouterService";
+import { getMacroGoals } from "@/storage/nutritionGoalsStorage";
 import { Meal } from "@/types/nutrition";
+import { DEFAULT_MACRO_GOALS, MacroGoals } from "@/types/nutritionGoals";
 import { calculateDailyTotals } from "@/utils/nutrition";
 import {
   formatDateSectionLabel,
@@ -22,6 +24,9 @@ export type LogPageFeedback = {
 
 const SYSTEM_CACHE_PREFIX = "guilt:system:";
 const LOG_CACHE_PREFIX = "guilt:log:";
+
+const systemMemoryCache = new Map<string, SystemStatusFeedback>();
+const logMemoryCache = new Map<string, LogPageFeedback>();
 
 const EMPTY_SYSTEM: SystemStatusFeedback = {
   statusLabel: "IDLE",
@@ -86,9 +91,11 @@ export async function getSystemStatusFeedback(
   if (cached) return JSON.parse(cached) as SystemStatusFeedback;
 
   try {
+    const goals = await getMacroGoals();
     const prompt = `${GUILT_VOICE}
 
 Based on this user's meal data, write a landing-page system status.
+Their daily targets: ${goals.calories} kcal, ${goals.protein}g protein, ${goals.carbs}g carbs, ${goals.fat}g fat.
 
 Data: ${buildMealSummary(meals)}
 
@@ -113,13 +120,14 @@ Return JSON:
     return feedback;
   } catch {
     const totals = calculateDailyTotals(meals);
+    const goals = await getMacroGoals();
+    const overTarget = totals.calories > goals.calories;
     return {
-      statusLabel: totals.calories > 2000 ? "CRITICAL" : "UNIMPRESSED",
+      statusLabel: overTarget ? "CRITICAL" : "UNIMPRESSED",
       title: "Feed the machine.",
-      subtitle:
-        totals.calories > 2000
-          ? `${totals.calories} calories and counting. Impressive, in the worst way.`
-          : "Did you really need that second snack? Your data says otherwise.",
+      subtitle: overTarget
+        ? `${totals.calories} calories and counting. Impressive, in the worst way.`
+        : "Did you really need that second snack? Your data says otherwise.",
     };
   }
 }
