@@ -726,7 +726,6 @@ const styles = StyleSheet.create({
     borderTopColor: colors.depth,
   },
   foodRow: {
-    // marginTop: 10,
     paddingTop: 10,
     borderTopWidth: 1,
     borderTopColor: colors.depth,
