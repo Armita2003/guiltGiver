@@ -4,19 +4,32 @@ import * as FileSystem from "expo-file-system/legacy";
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 // Free vision models rotate on OpenRouter — try in order until one works.
+// const FREE_VISION_MODELS = [
+//   "qwen/qwen-2.5-vl-7b-instruct:free",
+//   "qwen/qwen2.5-vl-32b-instruct:free",
+//   "meta-llama/llama-3.2-11b-vision-instruct:free",
+//   "google/gemma-3-27b-it:free",
+//   "openrouter/free",
+// ];
 const FREE_VISION_MODELS = [
+  "openrouter/free",
   "qwen/qwen-2.5-vl-7b-instruct:free",
   "qwen/qwen2.5-vl-32b-instruct:free",
   "meta-llama/llama-3.2-11b-vision-instruct:free",
   "google/gemma-3-27b-it:free",
-  "openrouter/free",
 ];
 
+// const FREE_TEXT_MODELS = [
+//   "google/gemma-3-27b-it:free",
+//   "meta-llama/llama-3.2-3b-instruct:free",
+//   "qwen/qwen-2-7b-instruct:free",
+//   "openrouter/free",
+// ];
 const FREE_TEXT_MODELS = [
+  "openrouter/free",
   "google/gemma-3-27b-it:free",
   "meta-llama/llama-3.2-3b-instruct:free",
   "qwen/qwen-2-7b-instruct:free",
-  "openrouter/free",
 ];
 
 const NUTRITION_PROMPT = `You are a nutrition assistant.
@@ -49,6 +62,7 @@ type MessageContent =
 
 function getApiKey(): string {
   const key = process.env.EXPO_PUBLIC_OPENROUTER_API_KEY;
+  // console.log("OPENROUTER_KEY_PRESENT:", !!key);
   if (!key) {
     throw new Error("EXPO_PUBLIC_OPENROUTER_API_KEY is not configured.");
   }
@@ -104,12 +118,17 @@ export async function requestTextCompletion(prompt: string): Promise<string> {
 
     if (!response.ok) {
       lastError =
-        data?.error?.message ?? `OpenRouter request failed (${response.status})`;
+        data?.error?.message ??
+        `OpenRouter request failed (${response.status})`;
       const retryable =
+        response.status === 403 ||
         response.status === 404 ||
         response.status === 429 ||
         response.status === 503;
-      if (retryable) continue;
+
+      if (retryable) {
+        continue;
+      }
       throw new Error(lastError);
     }
 
@@ -118,7 +137,8 @@ export async function requestTextCompletion(prompt: string): Promise<string> {
       lastError = "Empty response from OpenRouter.";
       continue;
     }
-
+    const textOrJson = await response.text();
+    console.log("OpenRouter status:", response.status, "body:", textOrJson);
     return text;
   }
 
@@ -152,7 +172,8 @@ async function requestAnalysis(content: MessageContent): Promise<MealAnalysis> {
 
     if (!response.ok) {
       lastError =
-        data?.error?.message ?? `OpenRouter request failed (${response.status})`;
+        data?.error?.message ??
+        `OpenRouter request failed (${response.status})`;
       const retryable =
         response.status === 404 ||
         response.status === 429 ||
@@ -189,7 +210,9 @@ function getMimeType(uri: string): string {
   return "image/jpeg";
 }
 
-export async function analyzeMealImage(imageUri: string): Promise<MealAnalysis> {
+export async function analyzeMealImage(
+  imageUri: string
+): Promise<MealAnalysis> {
   const base64 = await FileSystem.readAsStringAsync(imageUri, {
     encoding: FileSystem.EncodingType.Base64,
   });

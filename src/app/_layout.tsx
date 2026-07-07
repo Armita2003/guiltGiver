@@ -157,20 +157,11 @@ export default function RootLayout() {
           name="(tabs)"
 
           options={{
-            // ✅ Custom title with your style
             headerTitle: () => (
               <Text style={[globalStyles.title, { paddingLeft: 8 }]}>
                 Guilt Giver
               </Text>
             ),
-            // headerTitleAlign: "center", // Center the title
-
-            // ✅ Hamburger menu on the left
-            // headerLeft: () => (
-            //   <Pressable onPress={() => emit("menu:open")}>
-            //     <Ionicons name="menu" size={24} color={colors.white} />
-            //   </Pressable>
-            // ),
             headerRight: () => (
               <HeaderRight
                 meals={meals}

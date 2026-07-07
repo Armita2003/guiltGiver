@@ -3,7 +3,7 @@ import {
   getSystemStatusFeedback,
 } from "@/services/guiltFeedbackService";
 import { getMacroGoals } from "@/storage/nutritionGoalsStorage";
-import { globalStyles } from "@/styles/global";
+import { colors, globalStyles } from "@/styles/global";
 import { Meal } from "@/types/nutrition";
 import { DEFAULT_MACRO_GOALS } from "@/types/nutritionGoals";
 import { on } from "@/utils/events";
@@ -73,26 +73,30 @@ export default function SystemStatus({ meals }: SystemStatusProps) {
       cancelled = true;
     };
   }, [meals, mealsHash]);
-
   return (
     <View style={(globalStyles.sectionSpacing, { marginBottom: 24 })}>
+      {isLoadingFeedback ? (
+        <ActivityIndicator
+          style={{ marginBottom: 12 }}
+          size="small"
+          color={colors.button}
+        />
+      ) : null}
       <Text style={globalStyles.subtitle}>
         SYSTEM STATUS: {display.statusLabel}
       </Text>
       <View
         style={{
-          flexDirection: "row",
+          // flexDirection: "row",
           gap: 8,
           justifyContent: "space-between",
-          alignItems: "center",
         }}
       >
+        {/* <View> */}
         <Text style={globalStyles.sectionTitle}>{display.title}</Text>
-        {isLoadingFeedback ? (
-          <ActivityIndicator size="small" color="#ffffff" />
-        ) : null}
+        {/* </View> */}
+        <Text style={globalStyles.secondarySubTitle}>{display.subtitle}</Text>
       </View>
-      <Text style={globalStyles.secondarySubTitle}>{display.subtitle}</Text>
     </View>
   );
 }

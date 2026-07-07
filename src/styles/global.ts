@@ -37,13 +37,12 @@ export const globalStyles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: colors.background,
-    paddingTop: 34,
+    paddingTop: 24,
     flexShrink: 0,
     paddingLeft: 20,
     paddingRight: 20,
   },
   pageContent: {
-    // marginTop: 30,
     marginBottom: 30,
     paddingBottom: 30,
   },
@@ -88,7 +87,6 @@ export const globalStyles = StyleSheet.create({
   link: {
     color: "#007bff",
     fontSize: 18,
-    // textDecorationLine: "underline",
   },
   emptyList: {
     color: colors.textSecondary,

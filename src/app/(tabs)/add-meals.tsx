@@ -33,14 +33,13 @@ import Toast from "react-native-toast-message";
 type EntryMode = "manual" | "ai";
 type IconName = "dumbbell" | "food" | "leaf" | "cookie" | "cup";
 
-const categories: Array<{ id: MealCategory; title: string; icon: IconName }> =
-  [
-    { id: "protein", title: "Protein", icon: "dumbbell" },
-    { id: "fastFood", title: "Fast Food", icon: "food" },
-    { id: "healthy", title: "Healthy", icon: "leaf" },
-    { id: "snack", title: "Snack", icon: "cookie" },
-    { id: "drink", title: "Drink", icon: "cup" },
-  ];
+const categories: Array<{ id: MealCategory; title: string; icon: IconName }> = [
+  { id: "protein", title: "Protein", icon: "dumbbell" },
+  { id: "fastFood", title: "Fast Food", icon: "food" },
+  { id: "healthy", title: "Healthy", icon: "leaf" },
+  { id: "snack", title: "Snack", icon: "cookie" },
+  { id: "drink", title: "Drink", icon: "cup" },
+];
 
 export default function AddMealScreen() {
   const { isAiUnlocked, user } = useAuth();
@@ -78,11 +77,6 @@ export default function AddMealScreen() {
   };
 
   const handleAddManualMeal = async () => {
-    if (!user) {
-      setAuthModalVisible(true);
-      return;
-    }
-
     if (!name || !calories || !selectedCategory) {
       Toast.show({
         type: "error",
@@ -417,7 +411,11 @@ export default function AddMealScreen() {
             )}
             <Text style={styles.label}>Describe your meal</Text>
             <TextInput
-              style={[styles.input, styles.textArea, aiLocked && styles.inputDisabled]}
+              style={[
+                styles.input,
+                styles.textArea,
+                aiLocked && styles.inputDisabled,
+              ]}
               placeholder="2 scrambled eggs, 2 slices of toast, 1 banana"
               placeholderTextColor={colors.gridColors.unfilled}
               value={mealText}
@@ -431,7 +429,9 @@ export default function AddMealScreen() {
                 styles.secondaryButton,
                 aiLocked && styles.buttonDisabled,
               ]}
-              onPress={aiLocked ? () => setAuthModalVisible(true) : handleAnalyzeText}
+              onPress={
+                aiLocked ? () => setAuthModalVisible(true) : handleAnalyzeText
+              }
               disabled={isAnalyzing}
             >
               {isAnalyzing && !previewUri ? (
@@ -449,7 +449,9 @@ export default function AddMealScreen() {
                   aiLocked && styles.buttonDisabled,
                 ]}
                 onPress={
-                  aiLocked ? () => setAuthModalVisible(true) : () => pickImage(true)
+                  aiLocked
+                    ? () => setAuthModalVisible(true)
+                    : () => pickImage(true)
                 }
                 disabled={isAnalyzing}
               >
@@ -467,7 +469,9 @@ export default function AddMealScreen() {
                   aiLocked && styles.buttonDisabled,
                 ]}
                 onPress={
-                  aiLocked ? () => setAuthModalVisible(true) : () => pickImage(false)
+                  aiLocked
+                    ? () => setAuthModalVisible(true)
+                    : () => pickImage(false)
                 }
                 disabled={isAnalyzing}
               >
