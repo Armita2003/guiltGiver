@@ -44,3 +44,4 @@ app-example
 /android
 .vercel
 .env*
+eas-debug.log

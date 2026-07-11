@@ -8,7 +8,7 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_OPENROUTER_API_KEY": "@secret:EXPO_PUBLIC_OPENROUTER_API_KEY"
+        "EXPO_PUBLIC_OPENROUTER_API_KEY": "$EXPO_PUBLIC_OPENROUTER_API_KEY"
       }
     },
     "preview": {
@@ -17,13 +17,13 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_OPENROUTER_API_KEY": "@secret:EXPO_PUBLIC_OPENROUTER_API_KEY"
+        "EXPO_PUBLIC_OPENROUTER_API_KEY": "$EXPO_PUBLIC_OPENROUTER_API_KEY"
       }
     },
     "production": {
       "autoIncrement": true,
       "env": {
-        "EXPO_PUBLIC_OPENROUTER_API_KEY": "@secret:EXPO_PUBLIC_OPENROUTER_API_KEY"
+        "EXPO_PUBLIC_OPENROUTER_API_KEY": "$EXPO_PUBLIC_OPENROUTER_API_KEY"
       }
     }
   },
