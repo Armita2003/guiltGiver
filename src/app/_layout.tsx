@@ -1,5 +1,6 @@
 import AuthModal from "@/components/AuthModal";
 import ShareButton from "@/components/ShareButton";
+import SplashView from "@/components/SplashView";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { getMeals } from "@/storage/mealStorage";
 import { colors, fonts, globalStyles } from "@/styles/global";
@@ -138,7 +139,7 @@ export default function RootLayout() {
   );
 
   if (!fontsLoaded) {
-    return null; // Or render a loading spinner
+    return <SplashView />;
   }
 
   return (
